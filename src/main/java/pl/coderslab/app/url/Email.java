@@ -17,8 +17,7 @@ public class Email {
         public Email(){
         }
 
-        public Email(Long id, @NotNull String email) {
-                this.id = id;
+        public Email(String email) {
                 this.email = email;
         }
 

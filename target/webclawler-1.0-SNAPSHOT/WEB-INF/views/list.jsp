@@ -14,10 +14,9 @@
         <tr>
             <td>${email.id}</td>
             <td>${email.email}</td>
-<%--            <td>--%>
-<%--                <a href="/bookbind/form/${book.id}">Edytuj</a>--%>
-<%--                <a href="/bookbind/confirm/${book.id}">Usuń</a>--%>
-<%--            </td>--%>
+            <td>
+                <a href="/delete/${email.id}">Usuń</a>
+            </td>
         </tr>
     </c:forEach>
 </table>

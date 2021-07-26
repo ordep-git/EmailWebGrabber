@@ -5,7 +5,7 @@
     <title>Search Email</title>
 </head>
 <body>
-<a href='<c:url value="/search"/>'>znajdź maile </a>
+<a href='<c:url value="/search"/>'>znajdź maile | </a>
 <a href='<c:url value="/list"/>'> baza maili</a>
 
 <%@ include file="footer.jsp" %>

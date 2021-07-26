@@ -9,8 +9,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.lang.String;
 
-public class EmailDao {
+public class EmailExtractor {
 
     public Set<String> searchEmails(String url) throws IOException {
         Document document = Jsoup.connect(url).get();
@@ -22,6 +23,7 @@ public class EmailDao {
             emails.add(matcher.group());
         }
 //        System.out.println(emails);
+//        System.out.println("Rozmiar: " + emails.size());
         return emails;
     }
 }
