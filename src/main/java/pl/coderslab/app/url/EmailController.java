@@ -1,35 +1,34 @@
 package pl.coderslab.app.url;
 
+import ch.qos.logback.classic.Logger;
+import org.dom4j.rule.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.coderslab.repository.EmailRepository;
+import pl.coderslab.repository.UrlRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+// logger
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 //@RequestMapping("/email")
 public class EmailController {
     private final EmailRepository emailRepository;
-    //    private final EmailService emailService;
-    //    private final EmailExtractor emailExtractor;
+    private final UrlRepository urlRepository;
 
-//    public EmailController(EmailRepository emailRepository, EmailService emailService) {
-//        this.emailRepository = emailRepository;
-//        this.emailService = emailService;
-//    }
 
-//
-//    public EmailController(EmailRepository emailRepository, EmailExtractor emailExtractor) {
-//        this.emailRepository = emailRepository;
-//        this.emailExtractor = emailExtractor;
-//    }
-
-    public EmailController(EmailRepository emailRepository) {
+    public EmailController(EmailRepository emailRepository, UrlRepository urlRepository) {
         this.emailRepository = emailRepository;
+        this.urlRepository = urlRepository;
     }
 
     @GetMapping("/")
@@ -37,19 +36,55 @@ public class EmailController {
         return "mainform";
     }
 
+    @RequestMapping("/listall") //z db
+    public String listAllEmail(Model model) {
+        List<Email> emails = emailRepository.findAll();
+        model.addAttribute("emails", emails);
+        return "listall";
+    }
+
     @RequestMapping("/list") //z db
     public String listEmail(Model model) {
-        model.addAttribute("emails", emailRepository.findAll());
+        List<Email> emails = emailRepository.findAllByEmails();
+//        List<Email> emails = emailRepository.findAll();
+        model.addAttribute("emails", emails);
+//        model.addAttribute("urls", url);
+//        model.addAttribute("emails", emailRepository.findDistinctByEmail(emails));
         return "list";
     }
 
+    //logger test-model
+    Logger logger = null;
+    @RequestMapping(value = "/test-model")
+    @ResponseBody
+    public void getAllFromMap(Model model) {
+        List<Email> emails = emailRepository.findAllByEmails();
+        model.addAttribute("emails", emails);
+        model.asMap().forEach((k, v) -> logger.debug(k + "<klucz : wartosc>" + v));
+    }
+
+    @GetMapping("/form")
+    public String showMainFormSearch() {
+        return "form";
+    }
+
+//    @PostMapping("/form")
+//    public String formSearch(@RequestParam String url, Model model) {
+//
+//        return "search";
+//    }
+
+//    search and save
     @RequestMapping("/search")
-    public String searchListEmail(Model model) throws IOException {
+    public String searchListEmail(@RequestParam String url, Model model) throws IOException {
         EmailExtractor emailExtractor = new EmailExtractor();
-        Set<String> emails = emailExtractor.searchEmails("https://masab.pl/");
+        Set<String> emails = emailExtractor.searchEmails(url);
+        model.addAttribute("url", url);
         model.addAttribute("emails", emails);
         List<Email> emailList = emails.stream().map(Email::new).collect(Collectors.toList());
         this.emailRepository.saveAll(emailList);
+
+//        this.urlRepository.save(url);
         return "search";
     }
 

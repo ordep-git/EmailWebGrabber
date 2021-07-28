@@ -28,32 +28,28 @@ public class AppConfig implements WebMvcConfigurer {
 
     @Bean
     public LocalEntityManagerFactoryBean entityManagerFactory() {
-        LocalEntityManagerFactoryBean entityManagerFactoryBean
-                = new LocalEntityManagerFactoryBean();
+        LocalEntityManagerFactoryBean entityManagerFactoryBean = new LocalEntityManagerFactoryBean();
         entityManagerFactoryBean.setPersistenceUnitName("webcrawlerPersistenceUnit");
         return entityManagerFactoryBean;
     }
 
     @Bean
     public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
-        JpaTransactionManager jpaTransactionManager =
-                new JpaTransactionManager(entityManagerFactory);
+        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager(entityManagerFactory);
         return jpaTransactionManager;
     }
 
 
     @Bean
     public ViewResolver viewResolver() {
-        InternalResourceViewResolver viewResolver =
-                new InternalResourceViewResolver();
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setPrefix("/WEB-INF/views/");
         viewResolver.setSuffix(".jsp");
         return viewResolver;
     }
 
     @Override
-    public void configureDefaultServletHandling(
-            DefaultServletHandlerConfigurer configurer) {
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     }
 

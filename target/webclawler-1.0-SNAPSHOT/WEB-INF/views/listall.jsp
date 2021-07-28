@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2>lista maili</h2>
-<a href="/listall"> lista Alll</a>
+<a href="/list"> lista email - url</a>
 <table>
     <tr>
         <th>id</th>
@@ -19,7 +19,7 @@
         <tr>
             <td>${email.id}</td>
             <td>${email.email}</td>
-            <td>${urls}</td>
+            <td>${url}</td>
             <td>
                 <a href="/delete/${email.id}"> Usuń</a>
             </td>

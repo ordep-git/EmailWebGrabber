@@ -7,14 +7,16 @@
 </head>
 <body>
 <p>${emails.size()} emails</p>
+<%--<p>${links.size()} links</p>--%>
 
 <table>
     <tr>
         <th>email</th>
+        <th>url</th>
     </tr>
     <c:forEach items="${emails}" var="email">
         <tr>
-            <td>${email}</td>
+            <td>${email}</td><td>${url}</td>
         </tr>
     </c:forEach>
 </table>
