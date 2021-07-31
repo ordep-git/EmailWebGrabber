@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2>lista maili</h2>
-<a href="/listall"> lista Alll</a>
+<a href="/listall"> lista All</a>
 <table>
     <tr>
         <th>id</th>

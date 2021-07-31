@@ -6,7 +6,7 @@
     <title>Search</title>
 </head>
 <body>
-<p>${emails.size()} emails</p>
+<p>${emails.size()} email add to database</p>
 <%--<p>${links.size()} links</p>--%>
 
 <table>
@@ -20,11 +20,4 @@
         </tr>
     </c:forEach>
 </table>
-
-<%--<form:form modelAttribute="emails">--%>
-<%--    <form:input path="${email}"/>--%>
-<%--<input type="submit" value="dodaj do bazy"/>--%>
-<%--</form:form>--%>
-
-<%--<a href='<c:url value="/search?emailMap=${emails}"/>'>Dodaj do bazy</a>--%>
 <%@ include file="footer.jsp" %>

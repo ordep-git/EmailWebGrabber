@@ -19,7 +19,7 @@
         <tr>
             <td>${email.id}</td>
             <td>${email.email}</td>
-            <td>${url}</td>
+            <td>${urls}</td>
             <td>
                 <a href="/delete/${email.id}"> Usuń</a>
             </td>

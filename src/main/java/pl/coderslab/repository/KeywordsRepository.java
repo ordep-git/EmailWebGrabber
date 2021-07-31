@@ -2,8 +2,8 @@ package pl.coderslab.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.coderslab.app.entity.Url;
+import pl.coderslab.app.entity.Keywords;
 
 @Repository
-public interface UrlRepository extends JpaRepository<Url, Long> {
+public interface KeywordsRepository extends JpaRepository<Keywords, Long> {
 }
