@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pl.coderslab.app.entity.Email;
 import pl.coderslab.app.entity.Keywords;
 import pl.coderslab.app.entity.Url;
@@ -14,9 +13,7 @@ import pl.coderslab.app.email.EmailExtractor;
 import pl.coderslab.repository.EmailRepository;
 import pl.coderslab.repository.KeywordsRepository;
 import pl.coderslab.repository.UrlRepository;
-
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -27,7 +24,7 @@ public class KeywordsController {
     private final UrlRepository urlRepository;
     private final KeywordsRepository keywordsRepository;
     Logger logger = null;
-    Set<String> emails = null;
+    Set<String> emails = new HashSet<>();
 
     public KeywordsController(EmailRepository emailRepository, UrlRepository urlRepository, KeywordsRepository keywordsRepository) {
         this.emailRepository = emailRepository;
@@ -35,46 +32,45 @@ public class KeywordsController {
         this.keywordsRepository = keywordsRepository;
     }
 
+    //logger test-model
+//    @RequestMapping(value = "/test-email")
+//    @ResponseBody
+//    public void getAllFromMap(Model model) {
+//        List<Email> emails = emailRepository.findAllByEmails();
+//        model.addAttribute("emails", emails);
+//        model.asMap().forEach((k, v) -> logger.debug(k + " : " + v));
+//    }
+
     //    search links by keywords and save
     @RequestMapping("/searchlinks")
-    @ResponseBody
     public String searchLinksByKeywords(Model model, @RequestParam String keywords) {
         List<String> keywordslist2 = Stream.of(keywords.split(" ")).map(elem -> new String(elem)).collect(Collectors.toList());
         String keywordslist = String.join("+", keywordslist2);
         String urlgoogle = GOOGLE_PRE + keywordslist;
         LinkExtractor linkExtractor = new LinkExtractor();
         List<String> links = linkExtractor.searchLinks(urlgoogle);
-
-        //pobranie linku i wrzucenie do metody wyszukiwania
         EmailExtractor emailExtractor = new EmailExtractor();
-        int i = 14;
-        do {
-//            if (emailExtractor.searchEmails(links.get(i)) == null) {
-            i++;
-//            }
-            emails = emailExtractor.searchEmails(links.get(i));
-        } while (links.get(i).isEmpty());
+//        List<String> linksFiltr = new ArrayList<>();
+        //walidacja
+        List<String> validlinks = links.stream().filter(link -> emailExtractor.isValidRelativeURL(link)).collect(Collectors.toList());
+        //pobranie linku i wrzucenie do metody wyszukiwania
+        List<Email> emailList = validlinks.stream().map(link -> emailExtractor.searchEmails(link))
+                .flatMap(Collection::stream).map(mail -> new Email(mail)).collect(Collectors.toList());
 
-        model.addAttribute("emails", emails);
-        model.addAttribute("url", urlgoogle);
-        model.addAttribute("links", links);
-        List<Email> emailList = emails.stream().map(Email::new).collect(Collectors.toList());
+        model.addAttribute("emails", emailList);
         this.emailRepository.saveAll(emailList);
-
         Keywords keywords1 = new Keywords(keywordslist, emailList);
-        Url url1 = new Url(urlgoogle, emailList);
+
+        int linkIter = 0;
         for (Email em : emailList) {
-            em.addKeyword(keywords1);
-            this.keywordsRepository.save(keywords1);
+            Url url1 = new Url(validlinks.get(linkIter), emailList);
+            linkIter++;
             em.addUrl(url1);
             this.urlRepository.save(url1);
+
+            em.addKeyword(keywords1);
+            this.keywordsRepository.save(keywords1);
         }
-
-//        links.forEach(System.out::println);
-//        return emails;
-//        return "linki: " + links;
-        return "linki: "+ links.get(15);
-//        return "search";
+        return "searchkeywords";
     }
-
 }

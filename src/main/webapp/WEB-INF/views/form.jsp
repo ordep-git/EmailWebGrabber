@@ -11,6 +11,8 @@
     </style>
 </head>
 <body>
+<p><a href='<c:url value="/"/>'>Menu</a></p>
+<p>---</p>
 <h2>szukajka maili</h2>
 <form action="/search">
     <label for="url">URL:</label>
@@ -34,12 +36,5 @@
     <input type="submit"/>
 </form>
 
-<hr>
-
-<%--<form action="/webcrawler">--%>
-<%--    <label for="url">Webcrawler po keywords:</label>--%>
-<%--    <input id="webcrawler" type="text" name="webcrawler"/>--%>
-<%--    <input type="submit"/>--%>
-<%--</form>--%>
 <%@ include file="footer.jsp" %>
 

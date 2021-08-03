@@ -15,7 +15,7 @@ public class Url {
     private Long id;
 
 //    @NotNull
-    @URL(message = "Invalid  URL")
+//    @URL(message = "Invalid  URL")
     private String url;
 
     @NotNull
@@ -25,19 +25,17 @@ public class Url {
             inverseJoinColumns = @JoinColumn(name = "id_email"))
     private List<Email> emails = new ArrayList<>();
 
-
-
     public Url() {
     }
 
-    public Url(String url, List<Email> emails) {
+    public Url(String url, @NotNull List<Email> emails) {
         this.url = url;
         this.emails = emails;
     }
 
-    //    public Url(String url) {
-//        this.url = url;
-//    }
+    public Url(String url) {
+        this.url = url;
+    }
 
     public Long getId() {
         return id;
@@ -61,5 +59,10 @@ public class Url {
 
     public void setEmails(List<Email> emails) {
         this.emails = emails;
+    }
+
+    @Override
+    public String toString() {
+        return url;
     }
 }

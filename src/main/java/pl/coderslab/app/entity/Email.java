@@ -1,9 +1,10 @@
 package pl.coderslab.app.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "emails")
@@ -17,7 +18,7 @@ public class Email {
     private String email;
 
 //    @NotEmpty
-    @ManyToMany(mappedBy = "emails", cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "emails", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Url> urls = new ArrayList<>();
 
     @ManyToMany(mappedBy = "emails", cascade = CascadeType.REMOVE)
@@ -53,4 +54,20 @@ public class Email {
         this.email = email;
     }
 
+    public List<Url> getUrls() {
+        return urls;
+    }
+
+    public List<Keywords> getKeywords() {
+        return keywords;
+    }
+
+    @Override
+    public String toString() {
+        return email;
+    }
+
+    public String printUrls() {
+        return urls.stream().map(url -> url.toString()).collect(Collectors.joining(" "));
+    }
 }

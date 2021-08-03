@@ -1,11 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<html>
-<head>
-    <title>Email</title>
-</head>
-<body>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="header.jsp" %>
 <h2>lista maili</h2>
 <a href="/list"> lista email - url</a>
 <table>
@@ -19,7 +13,7 @@
         <tr>
             <td>${email.id}</td>
             <td>${email.email}</td>
-            <td>${urls}</td>
+            <td>${email.printUrls()}</td>
             <td>
                 <a href="/delete/${email.id}"> Usuń</a>
             </td>

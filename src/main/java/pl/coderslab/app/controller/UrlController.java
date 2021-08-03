@@ -4,32 +4,27 @@ import ch.qos.logback.classic.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.coderslab.app.entity.Email;
 import pl.coderslab.app.email.EmailExtractor;
+import pl.coderslab.app.entity.Email;
 import pl.coderslab.app.entity.Url;
 import pl.coderslab.repository.EmailRepository;
 import pl.coderslab.repository.UrlRepository;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 // logger
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.validation.Valid;
 
 @Controller
 //@RequestMapping("/email")
 public class UrlController {
     private final EmailRepository emailRepository;
     private final UrlRepository urlRepository;
-//    private final Validator validator;
 
     public UrlController(EmailRepository emailRepository, UrlRepository urlRepository) {
         this.emailRepository = emailRepository;
         this.urlRepository = urlRepository;
-//        this.validator = validator;
     }
 
     @GetMapping("/")
@@ -80,24 +75,24 @@ public class UrlController {
 
     //    search and save
     @RequestMapping("/search")
-//    public String searchListEmail(Model model, @Valid @RequestParam String url, BindingResult result) {
-    public String searchListEmail(Model model, @Valid @RequestParam String url) {
-//       walidacja
-//        if (result.hasErrors()) {
-//            return "/form";
-//        }
-        EmailExtractor emailExtractor = new EmailExtractor();
-        Set<String> emails = emailExtractor.searchEmails(url);
-        model.addAttribute("url", url);
-        model.addAttribute("emails", emails);
-        List<Email> emailList = emails.stream().map(Email::new).collect(Collectors.toList());
-        this.emailRepository.saveAll(emailList);
 
-        Url url1 = new Url(url, emailList);
-        for (Email em : emailList) {
-            em.addUrl(url1);
-            this.urlRepository.save(url1);
+    public String searchListEmail(Model model, @RequestParam String url) {
+        EmailExtractor emailExtractor = new EmailExtractor();
+//       walidacja
+        if (!emailExtractor.isValidRelativeURL(url)) {
+            return "redirect: /form";
         }
+            Set<String> emails = emailExtractor.searchEmails(url);
+            model.addAttribute("url", url);
+            model.addAttribute("emails", emails);
+            List<Email> emailList = emails.stream().map(Email::new).collect(Collectors.toList());
+            this.emailRepository.saveAll(emailList);
+
+            Url url1 = new Url(url, emailList);
+            for (Email em : emailList) {
+                em.addUrl(url1);
+                this.urlRepository.save(url1);
+            }
         return "search";
     }
 
