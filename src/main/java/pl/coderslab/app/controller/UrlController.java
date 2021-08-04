@@ -82,7 +82,7 @@ public class UrlController {
         if (!emailExtractor.isValidRelativeURL(url)) {
             return "redirect: /form";
         }
-            Set<String> emails = emailExtractor.searchEmails(url);
+            Set<Email> emails = emailExtractor.searchEmails(url);
             model.addAttribute("url", url);
             model.addAttribute("emails", emails);
             List<Email> emailList = emails.stream().map(Email::new).collect(Collectors.toList());

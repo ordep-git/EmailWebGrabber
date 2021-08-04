@@ -27,6 +27,10 @@ public class Keywords {
         this.emails = emails;
     }
 
+    public Keywords(String keyword) {
+        this.keyword = keyword;
+    }
+
     public Long getId() {
         return id;
     }

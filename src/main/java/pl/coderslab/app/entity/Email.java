@@ -24,6 +24,16 @@ public class Email {
     @ManyToMany(mappedBy = "emails", cascade = CascadeType.REMOVE)
     private List<Keywords> keywords = new ArrayList<>();
 
+//    public Email(String mail, List<Url> urlList) {
+//    }
+
+    public Email(Email mail, List<Url> link) {
+    }
+
+    public Email(Email email) {
+    }
+
+
     public void addUrl(Url url) {
         urls.add(url);
     }
@@ -36,6 +46,12 @@ public class Email {
     }
     public Email(String email) {
         this.email = email;
+    }
+
+    public Email(String email, List<Url> urls, List<Keywords> keywords) {
+        this.email = email;
+        this.urls = urls;
+        this.keywords = keywords;
     }
 
     public Long getId() {

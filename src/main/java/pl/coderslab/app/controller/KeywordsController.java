@@ -1,6 +1,7 @@
 package pl.coderslab.app.controller;
 
 import ch.qos.logback.classic.Logger;
+import com.google.protobuf.CodedOutputStream;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import pl.coderslab.app.email.EmailExtractor;
 import pl.coderslab.repository.EmailRepository;
 import pl.coderslab.repository.KeywordsRepository;
 import pl.coderslab.repository.UrlRepository;
+
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,6 +27,8 @@ public class KeywordsController {
     private final KeywordsRepository keywordsRepository;
     Logger logger = null;
     Set<String> emails = new HashSet<>();
+    private List<Url> link;
+
 
     public KeywordsController(EmailRepository emailRepository, UrlRepository urlRepository, KeywordsRepository keywordsRepository) {
         this.emailRepository = emailRepository;
@@ -50,27 +54,20 @@ public class KeywordsController {
         LinkExtractor linkExtractor = new LinkExtractor();
         List<String> links = linkExtractor.searchLinks(urlgoogle);
         EmailExtractor emailExtractor = new EmailExtractor();
-//        List<String> linksFiltr = new ArrayList<>();
         //walidacja
         List<String> validlinks = links.stream().filter(link -> emailExtractor.isValidRelativeURL(link)).collect(Collectors.toList());
         //pobranie linku i wrzucenie do metody wyszukiwania
-        List<Email> emailList = validlinks.stream().map(link -> emailExtractor.searchEmails(link))
-                .flatMap(Collection::stream).map(mail -> new Email(mail)).collect(Collectors.toList());
+
+        List<Url> urlList = validlinks.stream().map(link -> new Url(link)).collect(Collectors.toList());
+        List<Email> emailList = validlinks.stream().map(link -> emailExtractor.searchEmails(link)).flatMap(Collection::stream)
+                .map(mail -> new Email(mail, link)).collect(Collectors.toList());
+        List<Keywords> keywordList = keywordslist2.stream().map(key -> new Keywords(key, emailList)).collect(Collectors.toList());
 
         model.addAttribute("emails", emailList);
+        this.urlRepository.saveAll(urlList);
         this.emailRepository.saveAll(emailList);
-        Keywords keywords1 = new Keywords(keywordslist, emailList);
+        this.keywordsRepository.saveAll(keywordList);
 
-        int linkIter = 0;
-        for (Email em : emailList) {
-            Url url1 = new Url(validlinks.get(linkIter), emailList);
-            linkIter++;
-            em.addUrl(url1);
-            this.urlRepository.save(url1);
-
-            em.addKeyword(keywords1);
-            this.keywordsRepository.save(keywords1);
-        }
         return "searchkeywords";
     }
 }

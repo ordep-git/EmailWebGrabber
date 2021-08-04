@@ -11,8 +11,8 @@
     </tr>
     <c:forEach items="${emails}" var="email">
         <tr>
-                    <td>${email.email}</td>
-                    <td>${email.printUrls()}</td>
+                    <td>${email}</td>
+                    <td>${url}</td>
         </tr>
     </c:forEach>
 </table>
